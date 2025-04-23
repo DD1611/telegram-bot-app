@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "768494051647",
+    "project_id": "telegram-bot-b3a08",
+    "storage_bucket": "telegram-bot-b3a08.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768494051647:android:74e64bcbfcfd3b8df8738a",
+        "android_client_info": {
+          "package_name": "com.example.telegram_bot_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768494051647-jo3qjlg0ldqh4natcd1ujg1m64vr56bb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.telegram_bot_manager",
+            "certificate_hash": "f53e06170ca2d775cf87f38163033c471f8736ec"
+          }
+        },
+        {
+          "client_id": "768494051647-00hseuucmj0b2uud0uj7mtltuv2cpo0j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMW3LTHpzNz74dVKvIKnuynALwuULjA_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768494051647-00hseuucmj0b2uud0uj7mtltuv2cpo0j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "768494051647-u115gs7c1ri4ihfotr75r1235j5scljk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.telegramBotManager"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
