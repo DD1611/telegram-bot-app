@@ -135,4 +135,58 @@ class AuthService {
       photoUrl: user.photoURL ?? '',
     );
   }
+
+  Future<PigeonUserDetails> signInWithEmail(
+      String email, String password) async {
+    try {
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final user = userCredential.user;
+      if (user == null) {
+        throw Exception('Failed to sign in with email/password');
+      }
+
+      return PigeonUserDetails(
+        id: user.uid,
+        email: user.email ?? '',
+        displayName: user.displayName ?? '',
+        photoUrl: user.photoURL ?? '',
+      );
+    } catch (e) {
+      throw Exception('Failed to sign in with email/password: $e');
+    }
+  }
+
+  Future<PigeonUserDetails> registerWithEmail(
+    String email,
+    String password,
+    String name,
+  ) async {
+    try {
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final user = userCredential.user;
+      if (user == null) {
+        throw Exception('Failed to register with email/password');
+      }
+
+      // Update the user's display name
+      await user.updateDisplayName(name);
+
+      return PigeonUserDetails(
+        id: user.uid,
+        email: user.email ?? '',
+        displayName: name,
+        photoUrl: user.photoURL ?? '',
+      );
+    } catch (e) {
+      throw Exception('Failed to register with email/password: $e');
+    }
+  }
 }

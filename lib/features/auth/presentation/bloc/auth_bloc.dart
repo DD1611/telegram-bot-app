@@ -12,8 +12,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       : _authService = authService,
         super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
+    on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthGoogleLoginRequested>(_onAuthGoogleLoginRequested);
     on<AuthFacebookLoginRequested>(_onAuthFacebookLoginRequested);
+    on<AuthRegisterRequested>(_onAuthRegisterRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
   }
 
@@ -28,6 +30,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         emit(AuthInitial());
       }
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> _onAuthLoginRequested(
+    AuthLoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      emit(AuthLoading());
+      await _authService.signInWithEmail(event.email, event.password);
+      emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -53,6 +68,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
       await _authService.signInWithFacebook();
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> _onAuthRegisterRequested(
+    AuthRegisterRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      emit(AuthLoading());
+      await _authService.registerWithEmail(
+        event.email,
+        event.password,
+        event.name,
+      );
       emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
