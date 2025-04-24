@@ -53,13 +53,19 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => AuthBloc(
             authService: authService,
-          )..add(AuthCheckRequested()),
+          ),
         ),
         BlocProvider(
-          create: (_) => BotBloc(
-            userId: FirebaseAuth.instance.currentUser?.uid ?? 'default_user_id',
-            botRepository: BotRepositoryImpl(),
-          ),
+          create: (context) {
+            final authState = context.read<AuthBloc>().state;
+            final userId = authState is AuthSuccess
+                ? authState.user.uid
+                : FirebaseAuth.instance.currentUser?.uid ?? 'default_user_id';
+            return BotBloc(
+              userId: userId,
+              botRepository: BotRepositoryImpl(),
+            );
+          },
         ),
       ],
       child: MaterialApp(
@@ -67,7 +73,23 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        initialRoute: Routes.login,
+        home: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+
+            if (state is AuthSuccess) {
+              return const BotListPage();
+            }
+
+            return const LoginPage();
+          },
+        ),
         onGenerateRoute: AppRouter.generateRoute,
         debugShowCheckedModeBanner: false,
       ),

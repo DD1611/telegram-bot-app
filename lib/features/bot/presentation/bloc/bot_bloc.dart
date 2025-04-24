@@ -93,8 +93,15 @@ class BotBloc extends Bloc<BotEvent, BotState> {
         description: event.description,
         createdAt: DateTime.now(),
       );
+
+      // Create the bot
       await _botRepository.createBot(userId, bot);
+
+      // Load updated bot list
       final bots = await _botRepository.getBots(userId);
+
+      // Emit success state with the updated list
+      emit(BotSuccess('Bot created successfully'));
       emit(BotLoaded(bots));
     } catch (e) {
       emit(BotError(e.toString()));

@@ -5,7 +5,7 @@ abstract class BotState extends Equatable {
   const BotState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class BotInitial extends BotState {}
@@ -18,7 +18,16 @@ class BotLoaded extends BotState {
   const BotLoaded(this.bots);
 
   @override
-  List<Object> get props => [bots];
+  List<Object?> get props => [bots];
+}
+
+class BotSuccess extends BotState {
+  final String message;
+
+  const BotSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
 
 class BotError extends BotState {
@@ -27,5 +36,5 @@ class BotError extends BotState {
   const BotError(this.message);
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }

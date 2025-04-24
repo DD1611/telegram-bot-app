@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../data/services/auth_service.dart';
@@ -7,11 +9,21 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
+  late final StreamSubscription<User?> _authSubscription;
 
   AuthBloc({required AuthService authService})
       : _authService = authService,
         super(AuthInitial()) {
-    on<AuthCheckRequested>(_onAuthCheckRequested);
+    _authSubscription = _authService.authStateChanges.listen((user) {
+      if (user != null) {
+        add(AuthUserChanged(user));
+      } else {
+        add(AuthSignedOut());
+      }
+    });
+
+    on<AuthUserChanged>(_onAuthUserChanged);
+    on<AuthSignedOut>(_onAuthSignedOut);
     on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthGoogleLoginRequested>(_onAuthGoogleLoginRequested);
     on<AuthFacebookLoginRequested>(_onAuthFacebookLoginRequested);
@@ -19,20 +31,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
   }
 
-  Future<void> _onAuthCheckRequested(
-    AuthCheckRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    try {
-      final user = _authService.getCurrentUser();
-      if (user != null) {
-        emit(AuthSuccess());
-      } else {
-        emit(AuthInitial());
-      }
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
+  @override
+  Future<void> close() {
+    _authSubscription.cancel();
+    return super.close();
+  }
+
+  void _onAuthUserChanged(AuthUserChanged event, Emitter<AuthState> emit) {
+    emit(AuthSuccess(user: event.user));
+  }
+
+  void _onAuthSignedOut(AuthSignedOut event, Emitter<AuthState> emit) {
+    emit(AuthInitial());
   }
 
   Future<void> _onAuthLoginRequested(
@@ -42,7 +52,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
       await _authService.signInWithEmail(event.email, event.password);
-      emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -55,7 +64,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
       await _authService.signInWithGoogle();
-      emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -68,7 +76,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
       await _authService.signInWithFacebook();
-      emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -85,7 +92,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.password,
         event.name,
       );
-      emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -98,7 +104,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
       await _authService.signOut();
-      emit(AuthInitial());
     } catch (e) {
       emit(AuthError(e.toString()));
     }

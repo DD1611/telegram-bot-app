@@ -16,7 +16,13 @@ class _BotListPageState extends State<BotListPage> {
   @override
   void initState() {
     super.initState();
-    context.read<BotBloc>().add(BotLoadRequested());
+    _loadBots();
+  }
+
+  void _loadBots() {
+    if (mounted) {
+      context.read<BotBloc>().add(BotLoadRequested());
+    }
   }
 
   void _handleLogout(BuildContext context) {
@@ -52,8 +58,12 @@ class _BotListPageState extends State<BotListPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.botCreate);
+            onPressed: () async {
+              await Navigator.pushNamed(context, Routes.botCreate);
+              // Refresh the bot list when returning from create page
+              if (mounted) {
+                context.read<BotBloc>().add(BotLoadRequested());
+              }
             },
           ),
           PopupMenuButton<String>(
