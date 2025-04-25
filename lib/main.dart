@@ -73,23 +73,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthLoading) {
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-
-            if (state is AuthSuccess) {
-              return const BotListPage();
-            }
-
-            return const LoginPage();
-          },
-        ),
+        home: const LoginPage(),
         onGenerateRoute: AppRouter.generateRoute,
         debugShowCheckedModeBanner: false,
       ),

@@ -36,5 +36,7 @@ class BotError extends BotState {
   const BotError(this.message);
 
   @override
-  List<Object?> get props => [message];
+  List<Object> get props => [message];
 }
+
+class BotNavigateToList extends BotState {}

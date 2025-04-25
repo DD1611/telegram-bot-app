@@ -14,14 +14,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required AuthService authService})
       : _authService = authService,
         super(AuthInitial()) {
-    _authSubscription = _authService.authStateChanges.listen((user) {
-      if (user != null) {
-        add(AuthUserChanged(user));
-      } else {
-        add(AuthSignedOut());
-      }
-    });
-
+    // Register event handlers first
     on<AuthUserChanged>(_onAuthUserChanged);
     on<AuthSignedOut>(_onAuthSignedOut);
     on<AuthLoginRequested>(_onAuthLoginRequested);
@@ -29,6 +22,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthFacebookLoginRequested>(_onAuthFacebookLoginRequested);
     on<AuthRegisterRequested>(_onAuthRegisterRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
+
+    // Set up subscription for auth state changes
+    _authSubscription = _authService.authStateChanges.listen((user) {
+      if (user != null) {
+        add(AuthUserChanged(user));
+      } else {
+        add(AuthSignedOut());
+      }
+    });
   }
 
   @override

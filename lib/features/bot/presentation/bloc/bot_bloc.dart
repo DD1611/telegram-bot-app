@@ -84,7 +84,6 @@ class BotBloc extends Bloc<BotEvent, BotState> {
     BotCreateRequested event,
     Emitter<BotState> emit,
   ) async {
-    emit(BotLoading());
     try {
       final bot = Bot(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -103,6 +102,7 @@ class BotBloc extends Bloc<BotEvent, BotState> {
       // Emit success state with the updated list
       emit(BotSuccess('Bot created successfully'));
       emit(BotLoaded(bots));
+      emit(BotNavigateToList());
     } catch (e) {
       emit(BotError(e.toString()));
     }
@@ -135,13 +135,19 @@ class BotBloc extends Bloc<BotEvent, BotState> {
     BotDeleteRequested event,
     Emitter<BotState> emit,
   ) async {
-    emit(BotLoading());
     try {
+      // First delete the bot
       await _botRepository.deleteBot(userId, event.botId);
+
+      // Then get the updated list of bots
       final bots = await _botRepository.getBots(userId);
+
+      // Emit states in sequence
+      emit(BotSuccess('Bot deleted successfully'));
       emit(BotLoaded(bots));
+      emit(BotNavigateToList());
     } catch (e) {
-      emit(BotError(e.toString()));
+      emit(BotError('Failed to delete bot: ${e.toString()}'));
     }
   }
 }

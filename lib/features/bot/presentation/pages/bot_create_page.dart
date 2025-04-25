@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bot_bloc.dart';
 import '../bloc/bot_state.dart';
@@ -39,6 +40,7 @@ class _BotCreatePageState extends State<BotCreatePage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
+          } else if (state is BotNavigateToList) {
             Navigator.pushNamedAndRemoveUntil(
               context,
               Routes.botList,
@@ -99,29 +101,19 @@ class _BotCreatePageState extends State<BotCreatePage> {
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed: state is BotLoading
-                          ? null
-                          : () {
-                              if (_formKey.currentState!.validate()) {
-                                context.read<BotBloc>().add(
-                                      BotCreateRequested(
-                                        name: _nameController.text,
-                                        token: _tokenController.text,
-                                        description:
-                                            _descriptionController.text,
-                                      ),
-                                    );
-                              }
-                            },
-                      child: state is BotLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text('Create Bot'),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          context.read<BotBloc>().add(
+                                BotCreateRequested(
+                                  name: _nameController.text,
+                                  token: _tokenController.text,
+                                  description: _descriptionController.text,
+                                ),
+                              );
+                              Navigator.pushNamed(context,Routes.botList);
+                        }
+                      },
+                      child: const Text('Create Bot'),
                     ),
                   ],
                 ),
