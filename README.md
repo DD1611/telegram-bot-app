@@ -28,7 +28,7 @@ A Flutter application for managing Telegram bots with a modern and user-friendly
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/telegram_bot_manager.git
+git clone https://github.com/DD1611/telegram_bot_manager.git
 ```
 
 2. Install dependencies:
