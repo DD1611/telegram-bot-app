@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Telegram Bot Manager</string>
+    <string name="facebook_app_id">654440047562450</string>
+    <string name="fb_login_protocol_scheme">fb654440047562450</string>
+    <string name="facebook_client_token">631d8dc3d37112e89906ffba14718506</string>
+</resources> 
